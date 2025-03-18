@@ -1,111 +1,152 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { updateStaff, fetchStaffById } from '../api';
+import {
+  Container,
+  Typography,
+  Box,
+  TextField,
+  Button,
+  Grid,
+  Card,
+  CardMedia
+} from '@mui/material';
 
 function Update() {
-    const [formData, setFormData] = useState({
-        name: '',
-        address: '',
-        age: '',
-        avatar: '',
-        createdAt: ''
-    });
-    const [errors, setErrors] = useState({});
-    const navigate = useNavigate();
-    const { id } = useParams();
+  const [formData, setFormData] = useState({
+    name: '',
+    address: '',
+    age: '',
+    avatar: '',
+    createdAt: ''
+  });
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+  const { id } = useParams();
 
-    useEffect(() => {
-        fetchStaffById(id)
-            .then(response => {
-                setFormData({
-                    name: response.name,
-                    address: response.address,
-                    age: response.age,
-                    avatar: response.avatar,
-                    createdAt: response.createdAt
-                });
-            })
-            .catch(err => console.error(err));
-    }, [id]);
+  useEffect(() => {
+    fetchStaffById(id)
+      .then(response => {
+        setFormData({
+          name: response.name,
+          address: response.address,
+          age: response.age,
+          avatar: response.avatar,
+          createdAt: response.createdAt
+        });
+      })
+      .catch(err => console.error(err));
+  }, [id]);
 
-    const validateForm = () => {
-        let tempErrors = {};
-        if (!formData.name) tempErrors.name = 'Name is required';
-        else if (formData.name.split(' ').length < 3) tempErrors.name = 'Name must have more than 2 words';
-        if (!formData.address) tempErrors.address = 'Address is required';
-        if (!formData.age) tempErrors.age = 'Age is required';
-        if (!formData.avatar) tempErrors.avatar = 'Avatar URL is required';
-        setErrors(tempErrors);
-        return Object.keys(tempErrors).length === 0;
-    };
+  const validateForm = () => {
+    let tempErrors = {};
+    if (!formData.name) tempErrors.name = 'Name is required';
+    else if (formData.name.split(' ').length < 3) tempErrors.name = 'Name must have more than 2 words';
+    if (!formData.address) tempErrors.address = 'Address is required';
+    if (!formData.age) tempErrors.age = 'Age is required';
+    if (!formData.avatar) tempErrors.avatar = 'Avatar URL is required';
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (validateForm()) {
-            updateStaff(id, formData)
-                .then(() => navigate('/dashboard'))
-                .catch(err => console.error(err));
-        }
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      updateStaff(id, formData)
+        .then(() => navigate('/dashboard'))
+        .catch(err => console.error(err));
+    }
+  };
 
-    return (
-        <div className="container">
-            <h1>Update Staff</h1>
-            <div className="update-layout">
-                <div className="image-preview">
-                    {formData.avatar ? (
-                        <img
-                            src={formData.avatar}
-                            alt="Staff avatar"
-                            className="avatar-image"
-                            onError={(e) => e.target.src = 'path/to/placeholder-image.jpg'} // Fallback image
-                        />
-                    ) : (
-                        <div className="image-placeholder">No Image Available</div>
-                    )}
-                </div>
-                <form onSubmit={handleSubmit} className="add-form">
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            placeholder="Name"
-                            value={formData.name}
-                            onChange={e => setFormData({ ...formData, name: e.target.value })}
-                        />
-                        {errors.name && <span className="error">{errors.name}</span>}
-                    </div>
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            placeholder="Address"
-                            value={formData.address}
-                            onChange={e => setFormData({ ...formData, address: e.target.value })}
-                        />
-                        {errors.address && <span className="error">{errors.address}</span>}
-                    </div>
-                    <div className="form-group">
-                        <input
-                            type="number"
-                            placeholder="Age"
-                            value={formData.age}
-                            onChange={e => setFormData({ ...formData, age: e.target.value })}
-                        />
-                        {errors.age && <span className="error">{errors.age}</span>}
-                    </div>
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            placeholder="Avatar URL"
-                            value={formData.avatar}
-                            onChange={e => setFormData({ ...formData, avatar: e.target.value })}
-                        />
-                        {errors.avatar && <span className="error">{errors.avatar}</span>}
-                    </div>
-                    <button type="submit" className="submit-btn">Update Staff</button>
-                </form>
-            </div>
-        </div>
-    );
+  return (
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Update Staff
+      </Typography>
+      <Grid container spacing={3}>
+        {/* Image Preview */}
+        <Grid item xs={12} md={4}>
+          <Card>
+            {formData.avatar ? (
+              <CardMedia
+                component="img"
+                height="400"
+                image={formData.avatar}
+                alt="Staff avatar"
+                sx={{ objectFit: 'cover' }}
+                onError={(e) => e.target.src = 'https://via.placeholder.com/400x400?text=No+Image'}
+              />
+            ) : (
+              <Box
+                sx={{
+                  height: 400,
+                  backgroundColor: 'grey.200',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <Typography color="text.secondary">
+                  No Image Available
+                </Typography>
+              </Box>
+            )}
+          </Card>
+        </Grid>
+
+        {/* Form */}
+        <Grid item xs={12} md={8}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Name"
+              value={formData.name}
+              onChange={e => setFormData({...formData, name: e.target.value})}
+              error={!!errors.name}
+              helperText={errors.name}
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Address"
+              value={formData.address}
+              onChange={e => setFormData({...formData, address: e.target.value})}
+              error={!!errors.address}
+              helperText={errors.address}
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Age"
+              type="number"
+              value={formData.age}
+              onChange={e => setFormData({...formData, age: e.target.value})}
+              error={!!errors.age}
+              helperText={errors.age}
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Avatar URL"
+              value={formData.avatar}
+              onChange={e => setFormData({...formData, avatar: e.target.value})}
+              error={!!errors.avatar}
+              helperText={errors.avatar}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Update Staff
+            </Button>
+          </Box>
+        </Grid>
+      </Grid>
+    </Container>
+  );
 }
 
 export default Update;

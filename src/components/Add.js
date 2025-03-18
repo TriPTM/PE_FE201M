@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { addStaff } from '../api';
+import {
+  Container,
+  Typography,
+  Box,
+  TextField,
+  Button
+} from '@mui/material';
 
 function Add() {
   const [formData, setFormData] = useState({
@@ -34,48 +41,63 @@ function Add() {
   };
 
   return (
-    <div className="container">
-      <h1>Add New Staff</h1>
-      <form onSubmit={handleSubmit} className="add-form">
-        <div className="form-group">
-          <input
-            type="text"
-            placeholder="Name"
-            value={formData.name}
-            onChange={e => setFormData({ ...formData, name: e.target.value })}
-          />
-          {errors.name && <span className="error">{errors.name}</span>}
-        </div>
-        <div className="form-group">
-          <input
-            type="text"
-            placeholder="Address"
-            value={formData.address}
-            onChange={e => setFormData({ ...formData, address: e.target.value })}
-          />
-          {errors.address && <span className="error">{errors.address}</span>}
-        </div>
-        <div className="form-group">
-          <input
-            type="number"
-            placeholder="Age"
-            value={formData.age}
-            onChange={e => setFormData({ ...formData, age: e.target.value })}
-          />
-          {errors.age && <span className="error">{errors.age}</span>}
-        </div>
-        <div className="form-group">
-          <input
-            type="text"
-            placeholder="Avatar URL"
-            value={formData.avatar}
-            onChange={e => setFormData({ ...formData, avatar: e.target.value })}
-          />
-          {errors.avatar && <span className="error">{errors.avatar}</span>}
-        </div>
-        <button type="submit" className="submit-btn">Add Staff</button>
-      </form>
-    </div>
+    <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Add New Staff
+      </Typography>
+      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Name"
+          value={formData.name}
+          onChange={e => setFormData({ ...formData, name: e.target.value })}
+          error={!!errors.name}
+          helperText={errors.name}
+          variant="outlined"
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Address"
+          value={formData.address}
+          onChange={e => setFormData({ ...formData, address: e.target.value })}
+          error={!!errors.address}
+          helperText={errors.address}
+          variant="outlined"
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Age"
+          type="number"
+          value={formData.age}
+          onChange={e => setFormData({ ...formData, age: e.target.value })}
+          error={!!errors.age}
+          helperText={errors.age}
+          variant="outlined"
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Avatar URL"
+          value={formData.avatar}
+          onChange={e => setFormData({ ...formData, avatar: e.target.value })}
+          error={!!errors.avatar}
+          helperText={errors.avatar}
+          variant="outlined"
+        />
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Add Staff
+        </Button>
+      </Box>
+    </Container>
   );
 }
 
